@@ -1,48 +1,66 @@
+var images = "";
+var imageCtr = 0;
+var hyperLinks = "";
+var hyperLinksCtr = 0;
+var fonts = "";
+var fontsCtr = 0;
+var nodes;
 
-DOMtoString(document);
-
-function DOMtoString(document) {
-    if(document.body)
+function getNodes(){
+    if(!nodes)
     {
-        console.log(document.body);
+        nodes = document.body.querySelectorAll('*');
     }
-    var elements = document.getElementsByTagName("*");
-    
-    var images = "";
-    var hyperLinks = ""
-    var fonts = "";
-    var imageCtr = 0;
-    var hyperLinksCtr = 0;
-    var fontsCtr = 0;
-    var i;
-    
-    for (i = 0; i < elements.length; i++) {
+    images = "";
+    imageCtr = 0;
+    hyperLinks = "";
+    hyperLinksCtr = 0;
+    fonts = "";
+    fontsCtr = 0;
+
+    for (i = 0; i < nodes.length; i++) {
         
-        var fontMatches = elements[i].style.cssText.match(/.*font-family:(.*?);/);
+        var fontMatches = nodes[i].style.cssText.match(/.*font-family:(.*?);/);
         if(fontMatches)
         {
             fonts += fontMatches[1] + '\n';
             fontsCtr++;
         }
     
-        switch (elements[i].tagName)
+        switch (nodes[i].tagName)
         {
             case "IMG" :
-                images += elements[i].src + '\n';
+                images += nodes[i].src + '\n';
                 imageCtr++;
                 break;
             case "A" :
-                hyperLinks += elements[i].href + '\n';
+                hyperLinks += nodes[i].href + '\n';
                 hyperLinksCtr++;
                 break;
         }
-        
-
-    }
-    console.log("Total Number of Images:\n" + imageCtr);
-    console.log("Images:\n" + images);
-    console.log("Total Number of Links:\n" + hyperLinksCtr);
-    console.log("Links:\n" + hyperLinks);
-    console.log("Total Number of Fonts:\n" + fontsCtr);
-    console.log("Fonts:\n" + fonts);
+    } 
+    return nodes;
 }
+
+chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {  
+    
+    var data = {};
+    var nodes = {};
+
+    nodes = getNodes();
+    data = nodes.length;
+
+    console.log(data);
+    
+    if(msg.text ==  "links")
+    {
+        sendResponse({data : hyperLinks});
+    }
+    else if (msg.text == "images")
+    {
+        sendResponse({data : hyperLinks});
+    }
+});
+
+
+
