@@ -3,31 +3,66 @@ var images = "";
 var imageCtr = 0;
 var hyperLinks = "";
 var hyperLinksCtr = 0;
-var fonts = "";
-var fontsCtr = 0;
 
+var colors = {};
+var colorsData = {};
+var allFonts = {};
+var fontsData = {};
 
 function getNodes(){
-    if(!nodes)
-    {
-        nodes = document.body.querySelectorAll('*');
-    }
+    
     images = "";
     imageCtr = 0;
     hyperLinks = "";
     hyperLinksCtr = 0;
     fonts = "";
-    fontsCtr = 0;
+    colors = {};
+    var nodeArea ;
+    var bgColor;
+    var node;
+    var someFont;
+
+    if(!nodes)
+    {
+        nodes = document.body.querySelectorAll('*');
+    }
+      
 
     for (i = 0; i < nodes.length; i++) {
         
-        var fontMatches = nodes[i].style.cssText.match(/.*font-family:(.*?);/);
-        if(fontMatches)
+        node = nodes[i];
+        
+        //compute colors
+        nodeArea = node.clientWidth * node.clientHeight;
+        bgColor = window.getComputedStyle(node)['background-color'];
+        bgColor = bgColor.replace(/ /g, '');
+        if ( bgColor != 'rgb(255,255,255)' && !(bgColor.indexOf('rgba') === 0 && bgColor.substr(-3) === ',0)') ) 
         {
-            fonts += fontMatches[1] + '\n';
-            fontsCtr++;
+          colors[bgColor] = (colors[bgColor] >> 0) + nodeArea;
         }
-    
+        
+        colorsData = Object.getOwnPropertyNames(colors).sort(
+        function (a, b) {
+            return colors[b] - colors[a];colorsData
+        });
+        
+        //compute fonts
+        
+        fontList = window.getComputedStyle(node)['font-family'].replace(/ /g, '').replace(/'/g,'');
+        fontArr = fontList.split(',');
+        fontArrLength = fontArr.length;
+        //fontsData = [];
+        for (j = 0; j < fontArrLength; j++) 
+        {
+            someFont = fontArr[j] ;
+            allFonts[someFont.toLowerCase()] = 1;  
+        }
+        
+        fontsData = Object.getOwnPropertyNames(allFonts).sort(
+        function (a, b) {
+            return colors[b] - colors[a];colorsData
+        });
+        
         switch (nodes[i].tagName)
         {
             case "IMG" :
@@ -60,9 +95,12 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
     }
     else if (msg.text == "fonts")
     {
-        sendResponse({data : fonts});
+        console.log("fontsData:"+fontsData);
+        sendResponse({data: fontsData});
+    }
+    else if (msg.text == "colors")
+    {
+        sendResponse({data : colorsData});
     }
 });
-
-
 
