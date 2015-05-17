@@ -1,10 +1,11 @@
+var nodes;
 var images = "";
 var imageCtr = 0;
 var hyperLinks = "";
 var hyperLinksCtr = 0;
 var fonts = "";
 var fontsCtr = 0;
-var nodes;
+
 
 function getNodes(){
     if(!nodes)
@@ -45,12 +46,9 @@ function getNodes(){
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {  
     
     var data = {};
-    var nodes = {};
+    var allNodes = {};
 
-    nodes = getNodes();
-    data = nodes.length;
-
-    console.log(data);
+    allNodes = getNodes();
     
     if(msg.text ==  "links")
     {
@@ -58,7 +56,11 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
     }
     else if (msg.text == "images")
     {
-        sendResponse({data : hyperLinks});
+        sendResponse({data : images});
+    }
+    else if (msg.text == "fonts")
+    {
+        sendResponse({data : fonts});
     }
 });
 
