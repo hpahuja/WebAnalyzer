@@ -1,29 +1,4 @@
-function addContent(response)
-{
-    if(response){
 
-        $("div.content > p").html(response.data);
-    }
-}
-
-function addFonts(response)
-{
-    if(response){
-
-        $("div.content > p").html(response.data);
-    }
-}
-
-function addHeading(heading)
-{
-    $("div.heading > p").append("<h3>"+heading+"</h3>");
-}
-
-function flushContent()
-{
-    $("div.content > p").empty();
-    $("div.heading > p").empty();
-}
 
 document.getElementById('links').addEventListener('click', function(){
         chrome.tabs.query({active: true, currentWindow: true},
@@ -96,4 +71,43 @@ function showColors(response)
     } else {
       $("div.content > p").html('No background colors were found! :(');
     }
+}
+
+function addContent(response)
+{
+    if(response){
+        var list = response.data.split(",");
+        var length = list.length;
+        for( i = 0 ; i < length ; i++)
+        {
+           $("div.content table").append("<tr><td>" + list[i] + "</td><tr>" );
+        }
+    }
+}
+
+function addFonts(response)
+{
+
+    if(response){
+        var length = response.data.length;       
+        for( i = 0 ; i < length ; i++)
+        {
+           $("div.content table").append("<tr><td>" + response.data[i] + "</td></tr>" );
+        }
+    }
+    else{
+        $("div.content > p").html("Nothing found!");
+    }
+}
+
+function addHeading(heading)
+{
+    $("div.heading > p").append("<h3>"+heading+"</h3>");
+}
+
+function flushContent()
+{
+    $("div.content > p").empty();
+    $("div.content  table").empty();
+    $("div.heading > p").empty();
 }

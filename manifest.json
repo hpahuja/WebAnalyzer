@@ -1,18 +1,15 @@
 {
-  "name": "Design Analyser!",
+  "name": "WebPage Analyser!",
   "version": "0.1",
   "manifest_version": 2,
   "description": "Extension to peek into current webpage.",
   "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html",
-    "default_title": "Peek into Page design and visuals"
+  "default_icon": "icon.png",
+  "default_popup": "popup.html",
+  "default_title": "Peek into Page design and visuals"
   },
   "permissions": [
-    "activeTab",
-    "tabs", 
-    "http://*/*", 
-    "https://*/*"
+    "activeTab"
   ],
   "background": {
     "scripts": ["background.js"],
@@ -21,7 +18,7 @@
   "content_scripts": [
   {
       "matches": ["<all_urls>"],
-      "js": ["jquery-2.1.4.min.js","contentscript.js"],
+      "js": ["contentscript.js"],
       "run_at": "document_end"
   }
 ]
